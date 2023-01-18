@@ -1,25 +1,23 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { PostModule } from './post/post.module';
+import 'dotenv/config';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { UserController } from './user/controller/user.controller';
 import { UserModule } from './user/user.module';
-import { BaseService } from './base/base.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    UserModule,
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'writer',
-      entities: [],
-      synchronize: true,
+    PostModule,
+    ConfigModule.forRoot(),
+    MongooseModule.forRoot(process.env.MONGODB_URL, {
+      useNewUrlParser: true,
     }),
+    UserModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, BaseService],
+  controllers: [AppController, UserController],
+  providers: [AppService],
 })
 export class AppModule {}
