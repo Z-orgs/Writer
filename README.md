@@ -14,6 +14,12 @@ You can clone and develop it becomes a commercial product. But don't forget my n
 $ yarn install
 ```
 
+## Docker
+
+```bash
+$ yarn docker
+```
+
 ## Running the app
 
 ```bash
