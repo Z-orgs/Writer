@@ -12,6 +12,9 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
+  findOneBy(arg0: { username: string }) {
+    return this.userRepository.findOneBy(arg0);
+  }
   async register(user: UserDto) {
     user.password = await bcrypt.hash(user.password, 10);
     const validEmail = await this.userRepository.findOneBy({
