@@ -1,8 +1,10 @@
 services:
-  mongo:
-    image: mongo:focal
-    restart: always
+  mysql:
+    image: mysql:oracle
     ports:
-      - 27017:27017
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=writer
+      - MYSQL_ROOT_PASSWORD=root
     volumes:
-      - ./data/mongo:/data/db
+      - ./data/mysql:/var/lib/mysql

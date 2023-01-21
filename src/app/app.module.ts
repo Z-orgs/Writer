@@ -7,9 +7,27 @@ import { AuthModule } from 'src/auth/auth.module';
 import { CommentModule } from 'src/comment/comment.module';
 import { LikeModule } from 'src/like/like.module';
 import 'dotenv/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/user/entities/user.entity';
 
 @Module({
-  imports: [UserModule, PostModule, AuthModule, CommentModule, LikeModule],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: 'root',
+      database: 'writer',
+      entities: [User],
+      synchronize: true,
+    }),
+    UserModule,
+    PostModule,
+    AuthModule,
+    CommentModule,
+    LikeModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

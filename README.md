@@ -24,13 +24,13 @@ $ yarn docker
 
 ```bash
 # development
-$ yarn run start
+$ yarn start
 
 # watch mode
-$ yarn run start:dev
+$ yarn dev
 
 # production mode
-$ yarn run start:prod
+$ yarn prod
 ```
 
 ## Test
