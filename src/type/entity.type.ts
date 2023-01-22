@@ -10,3 +10,7 @@ export type CurrentJob = {
   position: string;
   company: string;
 };
+export enum Role {
+  'user',
+  'guest',
+}

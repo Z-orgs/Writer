@@ -4,6 +4,8 @@ import { UserDto } from './dto/user.dto';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Param, Put } from '@nestjs/common/decorators';
+import { User } from './entities/user.entity';
 
 @Controller('user')
 export class UserController {
@@ -24,5 +26,24 @@ export class UserController {
   @Get('profile')
   getProfile(@Req() req) {
     return req.user;
+  }
+  @UseGuards(JwtAuthGuard)
+  @Put('update')
+  updateUser(@Req() req, @Body() user: User) {
+    return this.userService.update(req.user.userId, user);
+  }
+  @Get(':username')
+  getUser(@Param('username') username: string) {
+    return this.userService.getUser(username);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Post('follow/:username')
+  doFollow(@Req() req, @Param('username') username: string) {
+    return this.userService.doFollow(req.user.username, username);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Post('unFollow/:username')
+  doUnFollow(@Req() req, @Param('username') username: string) {
+    return this.userService.doUnFollow(req.user.username, username);
   }
 }

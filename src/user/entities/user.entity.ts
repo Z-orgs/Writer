@@ -66,19 +66,19 @@ export class User extends Base {
   })
   totalFollower: number;
   @Column({
-    default: '[]',
+    type: 'text',
   })
   posts: string;
   @Column({
-    default: '[]',
+    type: 'text',
   })
   drafts: string;
   @Column({
-    default: '[]',
+    type: 'text',
   })
   savedPosts: string;
   @Column({
-    default: '[]',
+    type: 'text',
   })
   links: string;
   @Column({
@@ -102,15 +102,20 @@ export class User extends Base {
   })
   snapChat: string;
   @Column({
-    default: '[]',
+    type: 'text',
   })
   following: string;
   @Column({
-    default: '[]',
+    type: 'text',
   })
   follower: string;
   @Column({
     default: false,
   })
   banned: boolean;
+  @Column({
+    default: 'user',
+    update: false,
+  })
+  role: string;
 }

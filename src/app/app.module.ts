@@ -8,6 +8,7 @@ import { LikeModule } from 'src/like/like.module';
 import 'dotenv/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
+import { Post } from 'src/post/entities/post.entity';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { User } from 'src/user/entities/user.entity';
       username: 'root',
       password: 'root',
       database: 'writer',
-      entities: [User],
+      entities: [User, Post],
       synchronize: true,
     }),
     UserModule,
