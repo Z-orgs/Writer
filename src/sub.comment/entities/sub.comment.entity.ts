@@ -2,11 +2,9 @@ import { Base } from 'src/base/base.entity';
 import { Column, Entity } from 'typeorm';
 
 @Entity()
-export class Comment extends Base {
+export class SubComment extends Base {
     @Column()
-    post: string;
-    @Column()
-    user: string;
+    comment: string;
     @Column({
         type: 'text',
     })

@@ -3,10 +3,10 @@ import { App } from './dto/app.dto';
 
 @Injectable()
 export class AppService {
-  getStatusServer(): App {
-    return {
-      status: 200,
-      msg: 'Connection OK!',
-    };
-  }
+    getStatusServer(): App {
+        return {
+            status: 200,
+            msg: 'Connection OK!',
+        };
+    }
 }

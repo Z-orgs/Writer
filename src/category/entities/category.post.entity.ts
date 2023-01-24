@@ -1,10 +1,10 @@
 import { Base } from 'src/base/base.entity';
 import { Column, Entity } from 'typeorm';
 
-@Entity({ name: 'likePost' })
-export class LikeEntity extends Base {
+@Entity()
+export class CategoryPost extends Base {
     @Column()
-    user: string;
+    category: string;
     @Column()
     post: string;
 }

@@ -1,4 +1,4 @@
 export interface App {
-  status: number;
-  msg: string;
+    status: number;
+    msg: string;
 }

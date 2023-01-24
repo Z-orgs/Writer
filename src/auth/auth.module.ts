@@ -9,16 +9,16 @@ import { jwtConstant } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 
 @Module({
-  imports: [
-    forwardRef(() => UserModule),
-    PassportModule,
-    JwtModule.register({
-      secret: jwtConstant.secret,
-      signOptions: { expiresIn: jwtConstant.expiresIn },
-    }),
-  ],
-  controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
-  exports: [AuthService],
+    imports: [
+        forwardRef(() => UserModule),
+        PassportModule,
+        JwtModule.register({
+            secret: jwtConstant.secret,
+            signOptions: { expiresIn: jwtConstant.expiresIn },
+        }),
+    ],
+    controllers: [AuthController],
+    providers: [AuthService, LocalStrategy, JwtStrategy],
+    exports: [AuthService],
 })
 export class AuthModule {}
