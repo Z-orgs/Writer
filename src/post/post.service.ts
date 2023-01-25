@@ -1,6 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Inject } from '@nestjs/common/decorators/core/inject.decorator';
+import { forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryService } from 'src/category/category.service';
+import { LikeService } from 'src/like/like.service';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { CategoryDto } from './dto/category.dto';
@@ -14,6 +17,8 @@ export class PostService {
         private readonly postRepository: Repository<PostEntity>,
         private readonly userService: UserService,
         private readonly categoryService: CategoryService,
+        @Inject(forwardRef(() => LikeService))
+        private readonly likeService: LikeService,
     ) {}
     async create(req, post: PostDto, categories: CategoryDto) {
         /* Creating a new post object with the owner, like and comment properties. */
@@ -74,6 +79,13 @@ export class PostService {
     }
     async getPostById(id: string) {
         return await this.postRepository.findOneBy({ id });
+    }
+    async getPostByIdLogin(req: any, id: string) {
+        const post = await this.postRepository.findOneBy({ id });
+        const isLike = (await this.likeService.checkLike(req.user.userId, id))
+            ? true
+            : false;
+        return { ...post, isLike };
     }
     async getPosts() {
         const posts = await this.postRepository.find({

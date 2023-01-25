@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UserModule } from 'src/user/user.module';
 import { PostModule } from 'src/post/post.module';
 import { CommentModule } from 'src/comment/comment.module';
@@ -14,6 +12,7 @@ import { Comment } from 'src/comment/entities/comment.entity';
 import { SubComment } from 'src/sub.comment/entities/sub.comment.entity';
 import { Category } from 'src/category/entities/category.entity';
 import { CategoryPost } from 'src/category/entities/category.post.entity';
+import { SubCommentModule } from 'src/sub.comment/sub.comment.module';
 
 @Module({
     imports: [
@@ -39,8 +38,7 @@ import { CategoryPost } from 'src/category/entities/category.post.entity';
         PostModule,
         CommentModule,
         LikeModule,
+        SubCommentModule,
     ],
-    controllers: [AppController],
-    providers: [AppService],
 })
 export class AppModule {}

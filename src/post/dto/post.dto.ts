@@ -7,4 +7,5 @@ export class PostDto {
     description: string;
     @IsNotEmpty()
     content: string;
+    owner: string;
 }
