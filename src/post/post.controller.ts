@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { LikeService } from 'src/like/like.service';
 import { CategoryDto } from './dto/category.dto';
 import { CreatePostDto } from './dto/create.post.dto';
 import { PostDto } from './dto/post.dto';
@@ -59,12 +58,16 @@ export class PostController {
     getPostById(@Param('id') id: string) {
         return this.postService.getPostById(id);
     }
-    @Get(':username')
+    @Get('user/:username')
     getPostsByUsername(@Param('username') username: string) {
         return this.postService.getPostByUsername(username);
     }
     @Get()
     getPosts() {
         return this.postService.getPosts();
+    }
+    @Get('category/:categoryId')
+    getPostsByCategory(@Param('categoryId') categoryId: string) {
+        return this.postService.getPostsByCategory(categoryId);
     }
 }

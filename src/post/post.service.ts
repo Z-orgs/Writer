@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { CategoryDto } from './dto/category.dto';
 import { PostDto } from './dto/post.dto';
 import { PostEntity } from './entities/post.entity';
+import { CategoryPost } from 'src/category/entities/category.post.entity';
 
 @Injectable()
 export class PostService {
@@ -24,11 +25,13 @@ export class PostService {
         /* Creating a new post object with the owner, like and comment properties. */
         const newPost = {
             ...post,
-            ...{
-                owner: req.user.userId,
-            },
         } as PostEntity;
-
+        if (await this.postRepository.findOneBy({ ...newPost })) {
+            return new HttpException(
+                'Post already exist.',
+                HttpStatus.BAD_REQUEST,
+            );
+        }
         this.postRepository.insert(newPost);
         const insertedPost = await this.postRepository.findOneBy({
             ...newPost,
@@ -39,7 +42,10 @@ export class PostService {
         });
         user.totalPosts++;
         await this.userService.update(user.id, user);
-        categories.categories.forEach(async (category) => {
+
+        const listCategory = JSON.parse(categories.categories);
+
+        listCategory.forEach(async (category) => {
             await this.categoryService.insertCategoryPost({
                 post: insertedPost.id,
                 category: category,
@@ -96,7 +102,7 @@ export class PostService {
         });
         return posts;
     }
-    async updatePost(id: string, post: PostDto) {
+    async updatePost(id: string, post: PostEntity | PostDto) {
         try {
             await this.postRepository.update(id, post);
             return new HttpException('Post was update', HttpStatus.ACCEPTED);
@@ -119,11 +125,37 @@ export class PostService {
         }
     }
     async getPostByUsername(username: string) {
+        const user = await this.userService.findOneBy({ username: username });
+
         return await this.postRepository.find({
             where: {
-                owner: username,
+                owner: user.id,
                 status: 'approved',
             },
         });
+    }
+    async getPostsByCategory(categoryId: string) {
+        /* Checking if the category exists or not. */
+        const category = await this.categoryService.getCategoryById(categoryId);
+
+        if (!category) {
+            return new HttpException(
+                'Category not found.',
+                HttpStatus.NOT_FOUND,
+            );
+        }
+
+        /* Getting all the posts that have the categoryId. */
+        return await Promise.all(
+            (
+                await this.categoryService.getPostByCategoryId(categoryId)
+            ).map(
+                async (post) =>
+                    await this.postRepository.findOneBy({
+                        id: post.post,
+                        status: 'approved',
+                    }),
+            ),
+        );
     }
 }
