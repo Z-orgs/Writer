@@ -6,3 +6,9 @@ export class CreateCommentDto {
     @IsNotEmpty()
     content: string;
 }
+export class CreateSubCommentDto {
+    @IsNotEmpty()
+    comment: string;
+    @IsNotEmpty()
+    content: string;
+}

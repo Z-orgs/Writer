@@ -11,6 +11,7 @@ export type CurrentJob = {
     company: string;
 };
 export enum Role {
+    'admin',
     'user',
     'guest',
 }

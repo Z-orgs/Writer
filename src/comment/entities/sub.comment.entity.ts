@@ -5,6 +5,8 @@ import { Column, Entity } from 'typeorm';
 export class SubComment extends Base {
     @Column()
     comment: string;
+    @Column()
+    user: string;
     @Column({
         type: 'text',
     })

@@ -9,10 +9,9 @@ import { User } from 'src/user/entities/user.entity';
 import { PostEntity } from 'src/post/entities/post.entity';
 import { LikeEntity } from 'src/like/entities/like.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
-import { SubComment } from 'src/sub.comment/entities/sub.comment.entity';
 import { Category } from 'src/category/entities/category.entity';
 import { CategoryPost } from 'src/category/entities/category.post.entity';
-import { SubCommentModule } from 'src/sub.comment/sub.comment.module';
+import { SubComment } from 'src/comment/entities/sub.comment.entity';
 
 @Module({
     imports: [
@@ -28,9 +27,9 @@ import { SubCommentModule } from 'src/sub.comment/sub.comment.module';
                 PostEntity,
                 LikeEntity,
                 Comment,
-                SubComment,
                 Category,
                 CategoryPost,
+                SubComment,
             ],
             synchronize: true,
         }),
@@ -38,7 +37,6 @@ import { SubCommentModule } from 'src/sub.comment/sub.comment.module';
         PostModule,
         CommentModule,
         LikeModule,
-        SubCommentModule,
     ],
 })
 export class AppModule {}
