@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/Z-orgs/Writer" target="blank"><img src="https://i.imgur.com/H7NeKSR.png" width="1000" alt="Nest Logo" /></a>
+  <a href="https://github.com/Z-orgs/Writer" target="blank"><img src="https://i.imgur.com/H7NeKSR.png" width="1000" alt="Writer logo" /></a>
 </p>
 
 ## Description
@@ -11,7 +11,7 @@ You can clone and develop it becomes a commercial product. But don't forget my n
 ## Installation
 
 ```bash
-$ yarn install
+$ yarn
 ```
 
 ## Docker
@@ -31,25 +31,14 @@ $ yarn dev
 
 # production mode
 $ yarn prod
-```
 
-## Test
-
-```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+# quick start docker and watch mode
+$ yarn doev
 ```
 
 ## Author
 
 - Author - [Tom](https://github.com/VuongSyHanh)
-- LinkedIn - [LinkedIn](https://www.linkedin.com/in/vuongsyhanh/)
 
 ## License
 

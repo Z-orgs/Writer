@@ -112,7 +112,6 @@ export class PostService {
 	}
 	async getPostByUsername(username: string) {
 		const user = await this.userService.findOneBy({ username: username });
-
 		return await this.postRepository.find({
 			where: {
 				owner: user.id,
@@ -123,11 +122,9 @@ export class PostService {
 	async getPostsByCategory(categoryId: string) {
 		/* Checking if the category exists or not. */
 		const category = await this.categoryService.getCategoryById(categoryId);
-
 		if (!category) {
 			return new HttpException('Category not found.', HttpStatus.NOT_FOUND);
 		}
-
 		/* Getting all the posts that have the categoryId. */
 		return await Promise.all(
 			(
