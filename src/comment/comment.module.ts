@@ -7,8 +7,8 @@ import { PostModule } from 'src/post/post.module';
 import { SubComment } from './entities/sub.comment.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Comment, SubComment]), PostModule],
-    controllers: [CommentController],
-    providers: [CommentService],
+	imports: [TypeOrmModule.forFeature([Comment, SubComment]), PostModule],
+	controllers: [CommentController],
+	providers: [CommentService],
 })
 export class CommentModule {}

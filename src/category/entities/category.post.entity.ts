@@ -3,8 +3,8 @@ import { Column, Entity } from 'typeorm';
 
 @Entity()
 export class CategoryPost extends Base {
-    @Column()
-    category: string;
-    @Column()
-    post: string;
+	@Column()
+	category: string;
+	@Column()
+	post: string;
 }

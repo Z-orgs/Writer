@@ -14,29 +14,21 @@ import { CategoryPost } from 'src/category/entities/category.post.entity';
 import { SubComment } from 'src/comment/entities/sub.comment.entity';
 
 @Module({
-    imports: [
-        TypeOrmModule.forRoot({
-            type: 'mysql',
-            host: 'localhost',
-            port: 3306,
-            username: 'root',
-            password: 'root',
-            database: 'writer',
-            entities: [
-                User,
-                PostEntity,
-                LikeEntity,
-                Comment,
-                Category,
-                CategoryPost,
-                SubComment,
-            ],
-            synchronize: true,
-        }),
-        UserModule,
-        PostModule,
-        CommentModule,
-        LikeModule,
-    ],
+	imports: [
+		TypeOrmModule.forRoot({
+			type: 'mysql',
+			host: 'localhost',
+			port: 3306,
+			username: 'root',
+			password: 'root',
+			database: 'writer',
+			entities: [User, PostEntity, LikeEntity, Comment, Category, CategoryPost, SubComment],
+			synchronize: true,
+		}),
+		UserModule,
+		PostModule,
+		CommentModule,
+		LikeModule,
+	],
 })
 export class AppModule {}

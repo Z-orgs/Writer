@@ -6,9 +6,9 @@ import { Category } from './entities/category.entity';
 import { CategoryPost } from './entities/category.post.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Category, CategoryPost])],
-    controllers: [CategoryController],
-    providers: [CategoryService],
-    exports: [CategoryService],
+	imports: [TypeOrmModule.forFeature([Category, CategoryPost])],
+	controllers: [CategoryController],
+	providers: [CategoryService],
+	exports: [CategoryService],
 })
 export class CategoryModule {}

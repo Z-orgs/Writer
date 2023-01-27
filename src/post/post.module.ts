@@ -9,15 +9,15 @@ import { CategoryModule } from 'src/category/category.module';
 import { LikeModule } from 'src/like/like.module';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([PostEntity]),
-        AuthModule,
-        UserModule,
-        CategoryModule,
-        forwardRef(() => LikeModule),
-    ],
-    controllers: [PostController],
-    providers: [PostService],
-    exports: [PostService],
+	imports: [
+		TypeOrmModule.forFeature([PostEntity]),
+		AuthModule,
+		UserModule,
+		CategoryModule,
+		forwardRef(() => LikeModule),
+	],
+	controllers: [PostController],
+	providers: [PostService],
+	exports: [PostService],
 })
 export class PostModule {}

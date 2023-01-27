@@ -8,13 +8,9 @@ import { AuthModule } from 'src/auth/auth.module';
 import { forwardRef } from '@nestjs/common';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([LikeEntity]),
-        forwardRef(() => PostModule),
-        AuthModule,
-    ],
-    controllers: [LikeController],
-    providers: [LikeService],
-    exports: [LikeService],
+	imports: [TypeOrmModule.forFeature([LikeEntity]), forwardRef(() => PostModule), AuthModule],
+	controllers: [LikeController],
+	providers: [LikeService],
+	exports: [LikeService],
 })
 export class LikeModule {}
