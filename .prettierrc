@@ -16,5 +16,6 @@
   "useTabs": true,
   "vueIndentScriptAndStyle": false,
   "printWidth": 100,
-  "parser": "typescript"
+  "parser": "typescript",
+  "endOfLine": "lf"
 }
