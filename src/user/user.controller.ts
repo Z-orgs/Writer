@@ -6,6 +6,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Param, Put } from '@nestjs/common/decorators';
 import { User } from './entities/user.entity';
+import { ChangePasswordDto } from './dto/change.password.dto';
 
 @Controller('user')
 export class UserController {
@@ -45,5 +46,10 @@ export class UserController {
 	@Post('unFollow/:username')
 	doUnFollow(@Req() req, @Param('username') username: string) {
 		return this.userService.doUnFollow(req.user.username, username);
+	}
+	@UseGuards(JwtAuthGuard)
+	@Post('changePassword')
+	changePassword(@Req() req, @Body() changePassword: ChangePasswordDto) {
+		return this.userService.changePassword(req.user.userId, changePassword);
 	}
 }

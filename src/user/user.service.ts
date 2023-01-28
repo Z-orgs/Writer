@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import { HttpException } from '@nestjs/common/exceptions';
 import { HttpStatus } from '@nestjs/common/enums';
+import { ChangePasswordDto } from './dto/change.password.dto';
 
 @Injectable()
 export class UserService {
@@ -20,6 +21,7 @@ export class UserService {
 		return this.userRepository.update(id, user);
 	}
 	async register(user: UserDto) {
+		/* Hashing the password using bcrypt. */
 		user.password = await bcrypt.hash(user.password, 10);
 		/* Checking if the email and username already exist in the database. */
 		const validEmail = await this.userRepository.findOneBy({
@@ -143,5 +145,22 @@ export class UserService {
 		} catch (error) {
 			return new HttpException('Something was wrong.', HttpStatus.BAD_REQUEST);
 		}
+	}
+	async changePassword(userId: any, changePassword: ChangePasswordDto) {
+		/* Getting the user from the database. */
+		const user = await this.userRepository.findOneBy({ id: userId });
+		/* Checking if the old password is the same as the password in the database. */
+		const isEqual = bcrypt.compareSync(changePassword.oldPassword, user.password);
+		if (!isEqual) {
+			return new HttpException('Wrong old password', HttpStatus.BAD_REQUEST);
+		}
+		/* Checking if the new password and the re-new password are the same. */
+		if (changePassword.newPassword != changePassword.reNewPassword) {
+			return new HttpException('New passwords are not the same', HttpStatus.BAD_REQUEST);
+		}
+		/* Hashing the new password and then update the user in the database. */
+		user.password = await bcrypt.hash(changePassword.newPassword, 10);
+		await this.userRepository.update(user.id, user);
+		return await this.userRepository.findOneBy({ id: user.id });
 	}
 }

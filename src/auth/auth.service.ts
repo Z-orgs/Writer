@@ -11,13 +11,13 @@ export class AuthService {
 		private readonly jwtService: JwtService,
 	) {}
 	async validateUser(username: string, pass: string): Promise<any> {
+		/* Checking if the user exists in the database. */
 		const user = await this.userService.findOneBy({ username: username });
-
 		if (!user) {
 			return null;
 		}
+		/* Checking if the password is equal to the user password. */
 		const isEqual = compareSync(pass, user.password);
-
 		if (!isEqual) {
 			return null;
 		}
