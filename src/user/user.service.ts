@@ -9,6 +9,8 @@ import { HttpStatus } from '@nestjs/common/enums';
 import { ChangePasswordDto } from './dto/change.password.dto';
 import { PostService } from 'src/post/post.service';
 import { CategoryService } from 'src/category/category.service';
+import { unlinkSync } from 'fs';
+import imgur from 'imgur';
 
 @Injectable()
 export class UserService {
@@ -220,5 +222,13 @@ export class UserService {
 		tmpUser.role = 'admin';
 		await this.userRepository.update(id, tmpUser);
 		return new HttpException('Make admin successfully', HttpStatus.ACCEPTED);
+	}
+	async uploadImage(user: any, files: any) {
+		const image = files.image;
+		const uploadPath = './src/public/files/' + image.name;
+		await image.mv(uploadPath);
+		const uploadResult = await imgur.uploadFile(uploadPath);
+		unlinkSync(uploadPath);
+		return uploadResult.link;
 	}
 }

@@ -52,6 +52,11 @@ export class UserController {
 	changePassword(@Req() req, @Body() changePassword: ChangePasswordDto) {
 		return this.userService.changePassword(req.user.userId, changePassword);
 	}
+	@UseGuards(JwtAuthGuard)
+	@Post('uploadImage')
+	uploadImage(@Req() req, @Body() files: any) {
+		return this.userService.uploadImage(req.user, files);
+	}
 	//admin
 	@UseGuards(JwtAuthGuard)
 	@Get('admin')
