@@ -68,4 +68,9 @@ export class UserController {
 	deleteUser(@Req() req, @Param('id') id: string) {
 		return this.userService.deleteUser(req.user, id);
 	}
+	@UseGuards(JwtAuthGuard)
+	@Post('admin/:id')
+	makeAdmin(@Req() req, @Param('id') id: string) {
+		return this.userService.makeAdmin(req.user, id);
+	}
 }

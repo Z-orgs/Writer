@@ -211,4 +211,14 @@ export class UserService {
 		await this.userRepository.softDelete({ id });
 		return new HttpException('User was delete', HttpStatus.ACCEPTED);
 	}
+	async makeAdmin(user: any, id: string) {
+		/* Checking if the user is an admin or not. If the user is not an admin, it will return an error. */
+		if (user.role != 'admin') {
+			return new HttpException('No permission', HttpStatus.BAD_REQUEST);
+		}
+		const tmpUser = await this.userRepository.findOneBy({ id });
+		tmpUser.role = 'admin';
+		await this.userRepository.update(id, tmpUser);
+		return new HttpException('Make admin successfully', HttpStatus.ACCEPTED);
+	}
 }
