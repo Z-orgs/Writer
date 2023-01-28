@@ -30,13 +30,13 @@ export class PostController {
 	}
 	@UseGuards(JwtAuthGuard)
 	@Put('login/:id')
-	updatePost(@Param('id') id: string, @Body() post: PostDto) {
-		return this.postService.updatePost(id, post);
+	updatePost(@Req() req, @Param('id') id: string, @Body() post: PostDto) {
+		return this.postService.updatePost(req.user, id, post, false);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Delete('login/:id')
-	deletePost(@Param('id') id: string) {
-		return this.postService.deletePost(id);
+	deletePost(@Req() req, @Param('id') id: string) {
+		return this.postService.deletePost(req.user, id);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Get('login/:id')
@@ -60,5 +60,22 @@ export class PostController {
 	@Get('category/:categoryId')
 	getPostsByCategory(@Param('categoryId') categoryId: string) {
 		return this.postService.getPostsByCategory(categoryId);
+	}
+
+	//admin
+	@UseGuards(JwtAuthGuard)
+	@Get('admin')
+	getAllPostsByAdmin(@Req() req) {
+		return this.postService.getAllPostsByAdmin(req.user);
+	}
+	@UseGuards(JwtAuthGuard)
+	@Put('admin/:id')
+	approvePost(@Req() req, @Param('id') id: string) {
+		return this.postService.approvePost(req.user, id);
+	}
+	@UseGuards(JwtAuthGuard)
+	@Delete('admin/:id')
+	deletePostByAdmin(@Req() req, @Param('id') id: string) {
+		return this.postService.deletePostByAdmin(req.user, id);
 	}
 }

@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, ObjectID, Repository } from 'typeorm';
 import { CategoryPostDto } from './dto/category.post.dto';
 import { CreateCategory } from './dto/create.category.dto';
 import { UpdateCategory } from './dto/update.category.dto';
@@ -62,5 +62,19 @@ export class CategoryService {
 		/* Deleting all the posts that are associated with the category. */
 		await this.categoryPostRepository.softDelete({ category: id });
 		return new HttpException('Deleted', HttpStatus.ACCEPTED);
+	}
+	async categoryPostSoftDelete(
+		criteria:
+			| string
+			| number
+			| Date
+			| ObjectID
+			| string[]
+			| number[]
+			| Date[]
+			| ObjectID[]
+			| FindOptionsWhere<CategoryPost>,
+	) {
+		return await this.categoryPostRepository.softDelete(criteria);
 	}
 }

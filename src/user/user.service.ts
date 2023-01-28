@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserDto } from './dto/user.dto';
@@ -7,12 +7,16 @@ import { User } from './entities/user.entity';
 import { HttpException } from '@nestjs/common/exceptions';
 import { HttpStatus } from '@nestjs/common/enums';
 import { ChangePasswordDto } from './dto/change.password.dto';
+import { PostService } from 'src/post/post.service';
+import { CategoryService } from 'src/category/category.service';
 
 @Injectable()
 export class UserService {
 	constructor(
 		@InjectRepository(User)
 		private readonly userRepository: Repository<User>,
+		@Inject(forwardRef(() => PostService)) private readonly postService: PostService,
+		private readonly categoryService: CategoryService,
 	) {}
 	findOneBy(arg0: { username: string }) {
 		return this.userRepository.findOneBy(arg0);
@@ -162,5 +166,49 @@ export class UserService {
 		user.password = await bcrypt.hash(changePassword.newPassword, 10);
 		await this.userRepository.update(user.id, user);
 		return await this.userRepository.findOneBy({ id: user.id });
+	}
+	async getAllUsersByAdmin(user: any) {
+		/* Checking if the user is an admin or not. If the user is not an admin, it will return an error. */
+		if (user.role != 'admin') {
+			return new HttpException('No permission', HttpStatus.BAD_REQUEST);
+		}
+		/* Getting all the users from the database and sorting it by the createdAt date. */
+		return await this.userRepository.find({
+			order: {
+				createdAt: 'DESC',
+			},
+		});
+	}
+	async lockUser(user: any, id: string) {
+		/* Checking if the user is an admin or not. If the user is not an admin, it will return an error. */
+		if (user.role != 'admin') {
+			return new HttpException('No permission', HttpStatus.BAD_REQUEST);
+		}
+		/* Getting the user from the database and then update the user in the database. */
+		const tmpUser = await this.userRepository.findOneBy({ id });
+		tmpUser.banned = true;
+		await this.userRepository.update(tmpUser.id, tmpUser);
+		return tmpUser;
+	}
+	async deleteUser(user: any, id: string) {
+		/* Checking if the user is an admin or not. If the user is not an admin, it will return an error. */
+		if (user.role != 'admin') {
+			return new HttpException('No permission', HttpStatus.BAD_REQUEST);
+		}
+		/* Soft deleting the post and the category post. */
+		const posts = await this.postService.find({
+			where: {
+				owner: id,
+			},
+		});
+		posts.forEach(async (post) => {
+			await this.categoryService.categoryPostSoftDelete({ post: post.id });
+		});
+		await this.postService.softDelete({
+			owner: id,
+		});
+		/* Soft deleting the user from the database. */
+		await this.userRepository.softDelete({ id });
+		return new HttpException('User was delete', HttpStatus.ACCEPTED);
 	}
 }

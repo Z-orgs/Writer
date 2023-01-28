@@ -12,7 +12,7 @@ import { LikeModule } from 'src/like/like.module';
 	imports: [
 		TypeOrmModule.forFeature([PostEntity]),
 		AuthModule,
-		UserModule,
+		forwardRef(() => UserModule),
 		CategoryModule,
 		forwardRef(() => LikeModule),
 	],

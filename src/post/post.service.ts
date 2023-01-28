@@ -5,18 +5,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryService } from 'src/category/category.service';
 import { LikeService } from 'src/like/like.service';
 import { UserService } from 'src/user/user.service';
-import { Repository } from 'typeorm';
+import { FindManyOptions, FindOptionsWhere, ObjectID, Repository } from 'typeorm';
 import { CategoryDto } from './dto/category.dto';
 import { PostDto } from './dto/post.dto';
 import { PostEntity } from './entities/post.entity';
-import { CategoryPost } from 'src/category/entities/category.post.entity';
 
 @Injectable()
 export class PostService {
 	constructor(
 		@InjectRepository(PostEntity)
 		private readonly postRepository: Repository<PostEntity>,
-		private readonly userService: UserService,
+		@Inject(forwardRef(() => UserService)) private readonly userService: UserService,
 		private readonly categoryService: CategoryService,
 		@Inject(forwardRef(() => LikeService))
 		private readonly likeService: LikeService,
@@ -94,16 +93,36 @@ export class PostService {
 		});
 		return posts;
 	}
-	async updatePost(id: string, post: PostEntity | PostDto) {
+	async updatePost(user: any, id: string, post: PostEntity | PostDto, passing: boolean = true) {
+		let tmpPost = null;
+		if (!passing) {
+			/* Getting the post by the id. */
+			tmpPost = await this.postRepository.findOneBy({ id });
+			/* Checking if the user is the owner of the post or not. If not, it will return an error. */
+			if (tmpPost.owner != user.userId) {
+				return new HttpException('No permission', HttpStatus.BAD_REQUEST);
+			}
+			/* Updating the post content, title and description. */
+			tmpPost.content = post.content;
+			tmpPost.title = post.title;
+			tmpPost.description = post.description;
+		}
 		try {
-			await this.postRepository.update(id, post);
+			await this.postRepository.update(id, tmpPost ? tmpPost : post);
 			return new HttpException('Post was update', HttpStatus.ACCEPTED);
 		} catch (err) {
 			return new HttpException('Something was wrong', HttpStatus.BAD_REQUEST);
 		}
 	}
-	async deletePost(id: string) {
+	async deletePost(user: any, id: string) {
+		/* Getting the post by the id. */
+		const tmpPost = await this.postRepository.findOneBy({ id });
+		/* Checking if the user is the owner of the post or not. If not, it will return an error. */
+		if (tmpPost.owner != user.userId) {
+			return new HttpException('No permission', HttpStatus.BAD_REQUEST);
+		}
 		try {
+			/* Deleting the post from the database. */
 			await this.postRepository.softDelete(id);
 			return new HttpException('Post was delete', HttpStatus.ACCEPTED);
 		} catch (err) {
@@ -137,5 +156,54 @@ export class PostService {
 					}),
 			),
 		);
+	}
+	async getAllPostsByAdmin(user: any) {
+		/* Checking if the user is an admin or not. If not, it will return an error. */
+		if (user.role != 'admin') {
+			return new HttpException('No permission', HttpStatus.BAD_REQUEST);
+		}
+		/* Returning all the posts in the database. */
+		return await this.postRepository.find({
+			order: {
+				createdAt: 'DESC',
+			},
+		});
+	}
+	async approvePost(user: any, id: string) {
+		/* Checking if the user is an admin or not. If not, it will return an error. */
+		if (user.role != 'admin') {
+			return new HttpException('No permission', HttpStatus.BAD_REQUEST);
+		}
+		/* Updating the post status to approved. */
+		const post = await this.postRepository.findOneBy({ id });
+		post.status = 'approved';
+		await this.postRepository.update(id, post);
+		return await this.postRepository.findOneBy({ id });
+	}
+	async deletePostByAdmin(user: any, id: string) {
+		/* Checking if the user is an admin or not. If not, it will return an error. */
+		if (user.role != 'admin') {
+			return new HttpException('No permission', HttpStatus.BAD_REQUEST);
+		}
+		/* Deleting the post from the database. */
+		await this.postRepository.softDelete(id);
+		return new HttpException('Post was delete', HttpStatus.ACCEPTED);
+	}
+	async softDelete(
+		criteria:
+			| string
+			| number
+			| Date
+			| ObjectID
+			| string[]
+			| number[]
+			| Date[]
+			| ObjectID[]
+			| FindOptionsWhere<PostEntity>,
+	) {
+		return this.postRepository.softDelete(criteria);
+	}
+	async find(options?: FindManyOptions<PostEntity>) {
+		return await this.postRepository.find(options);
 	}
 }

@@ -9,11 +9,11 @@ export class LikeController {
 	@UseGuards(JwtAuthGuard)
 	@Post(':id')
 	likePost(@Req() req, @Param('id') id: string) {
-		return this.likeService.likePost(req, id);
+		return this.likeService.likePost(req.user, id);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Post('unlike/:id')
 	unlikePost(@Req() req, @Param('id') id: string) {
-		return this.likeService.unlikePost(req, id);
+		return this.likeService.unlikePost(req.user, id);
 	}
 }

@@ -14,31 +14,31 @@ export class LikeService {
 		@Inject(forwardRef(() => PostService))
 		private readonly postService: PostService,
 	) {}
-	async likePost(req: any, id: string) {
+	async likePost(user: any, id: string) {
 		/* Creating a new like object and assigning the post and user to it. */
 		const likeObj = new LikeEntity();
 		likeObj.post = id;
-		likeObj.user = req.user.userId;
+		likeObj.user = user.userId;
 		/* Checking if the user has already liked the post. If they have, it will throw an error. */
-		if (this.checkLike(req.user.userId, id)) {
+		if (this.checkLike(user.userId, id)) {
 			return new HttpException('User already liked this post.', HttpStatus.BAD_REQUEST);
 		}
 		/* This is getting the post by the id, incrementing the total likes, and then updating the post. */
 		const post = await this.postService.getPostById(id);
 		post.totalLikes++;
-		await this.postService.updatePost(id, post);
+		await this.postService.updatePost(user, id, post);
 		return await this.likeRepository.insert(likeObj);
 	}
-	async unlikePost(req: any, id: string) {
+	async unlikePost(user: any, id: string) {
 		/* Checking if the user has liked the post. If they have not, it will throw an error. */
-		const likeObj = await this.checkLike(req.user.userId, id);
+		const likeObj = await this.checkLike(user.userId, id);
 		if (!likeObj) {
 			return new HttpException('User does not like this post.', HttpStatus.BAD_REQUEST);
 		}
 		/* This is getting the post by the id, decrementing the total likes, and then updating the post. */
 		const post = await this.postService.getPostById(id);
 		post.totalLikes--;
-		await this.postService.updatePost(id, post);
+		await this.postService.updatePost(user, id, post);
 		return this.likeRepository.delete(likeObj.id);
 	}
 	async checkLike(userId: string, postId: string) {

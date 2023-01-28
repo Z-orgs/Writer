@@ -4,7 +4,7 @@ import { UserDto } from './dto/user.dto';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { Param, Put } from '@nestjs/common/decorators';
+import { Delete, Param, Put } from '@nestjs/common/decorators';
 import { User } from './entities/user.entity';
 import { ChangePasswordDto } from './dto/change.password.dto';
 
@@ -51,5 +51,21 @@ export class UserController {
 	@Post('changePassword')
 	changePassword(@Req() req, @Body() changePassword: ChangePasswordDto) {
 		return this.userService.changePassword(req.user.userId, changePassword);
+	}
+	//admin
+	@UseGuards(JwtAuthGuard)
+	@Get('admin')
+	getAllUsersByAdmin(@Req() req) {
+		return this.userService.getAllUsersByAdmin(req.user);
+	}
+	@UseGuards(JwtAuthGuard)
+	@Put('admin/:id')
+	lockUser(@Req() req, @Param('id') id: string) {
+		return this.userService.lockUser(req.user, id);
+	}
+	@UseGuards(JwtAuthGuard)
+	@Delete('admin/:id')
+	deleteUser(@Req() req, @Param('id') id: string) {
+		return this.userService.deleteUser(req.user, id);
 	}
 }

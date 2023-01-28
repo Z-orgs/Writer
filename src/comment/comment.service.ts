@@ -16,17 +16,17 @@ export class CommentService {
 		@InjectRepository(SubComment)
 		private readonly subCommentRepository: Repository<SubComment>,
 	) {}
-	async createComment(userId: any, comment: CreateCommentDto) {
+	async createComment(user: any, comment: CreateCommentDto) {
 		/* Creating a new comment and inserting it into the database. */
 		const newComment = {
-			user: userId,
+			user: user.userId,
 			...comment,
 		};
 		const result = await this.commentRepository.insert(newComment);
 		/* This is updating the totalComments of the post. */
 		const post = await this.postService.getPostById(newComment.post);
 		post.totalComments++;
-		await this.postService.updatePost(newComment.post, post);
+		await this.postService.updatePost(user, newComment.post, post);
 		return result;
 	}
 	async updateComment(userId: any, id: string, updateComment: UpdateCommentDto) {
@@ -40,12 +40,12 @@ export class CommentService {
 		await this.commentRepository.update(id, comment);
 		return this.commentRepository.findOneBy({ id });
 	}
-	async deleteComment(userId: any, id: string) {
+	async deleteComment(user: any, id: string) {
 		try {
 			const comment = await this.commentRepository.findOneBy({ id });
 			/* This is checking if the user is the owner of the comment. If not, it will throw an
             error. */
-			if (comment.user != userId) {
+			if (comment.user != user.userId) {
 				return new HttpException('Cannot delete this comment.', HttpStatus.BAD_REQUEST);
 			}
 			/* Deleting the comment from the database. */
@@ -53,17 +53,17 @@ export class CommentService {
 			/* This is updating the totalComments of the post. */
 			const post = await this.postService.getPostById(comment.post);
 			post.totalComments--;
-			await this.postService.updatePost(comment.post, post);
+			await this.postService.updatePost(user, comment.post, post);
 			return new HttpException('Deleted', HttpStatus.ACCEPTED);
 		} catch (error) {
 			return new HttpException('Somethings was wrong.', HttpStatus.BAD_REQUEST);
 		}
 	}
-	async createSubComment(userId: any, subComment: CreateSubCommentDto) {
+	async createSubComment(user: any, subComment: CreateSubCommentDto) {
 		/* Creating a new sub comment and inserting it into the database. */
 		const newSubComment = {
 			...subComment,
-			user: userId,
+			user: user.userId,
 		};
 		const result = await this.subCommentRepository.insert(newSubComment);
 		/* Getting the comment that the sub comment is related to. */
@@ -74,7 +74,7 @@ export class CommentService {
         of the post. */
 		const post = await this.postService.getPostById(comment.post);
 		post.totalComments++;
-		await this.postService.updatePost(comment.post, post);
+		await this.postService.updatePost(user, comment.post, post);
 		return result;
 	}
 	async updateSubComment(userId: any, id: string, updateSubComment: UpdateSubCommentDto) {
@@ -89,14 +89,14 @@ export class CommentService {
 		await this.subCommentRepository.update(id, subComment);
 		return await this.subCommentRepository.findOneBy({ id });
 	}
-	async deleteSubComment(userId: any, id: string) {
+	async deleteSubComment(user: any, id: string) {
 		try {
 			/* Getting the sub comment that the user wants to delete. */
 			const subComment = await this.subCommentRepository.findOneBy({
 				id,
 			});
 			/* This is checking if the user is the owner of the comment. If not, it will throw an error. */
-			if (subComment.user != userId) {
+			if (subComment.user != user.userId) {
 				return new HttpException('Cannot delete this comment.', HttpStatus.BAD_REQUEST);
 			}
 			/* Deleting the sub comment from the database. */
@@ -108,7 +108,7 @@ export class CommentService {
 			/* This is updating the totalComments of the post. */
 			const post = await this.postService.getPostById(comment.post);
 			post.totalComments--;
-			await this.postService.updatePost(comment.post, post);
+			await this.postService.updatePost(user, comment.post, post);
 			return new HttpException('Deleted', HttpStatus.ACCEPTED);
 		} catch (error) {
 			return new HttpException('Somethings was wrong.', HttpStatus.BAD_REQUEST);
