@@ -11,13 +11,14 @@ import { PostService } from 'src/post/post.service';
 import { CategoryService } from 'src/category/category.service';
 import { unlinkSync } from 'fs';
 import imgur from 'imgur';
+import { PostEntity } from 'src/post/entities/post.entity';
 
 @Injectable()
 export class UserService {
 	constructor(
 		@InjectRepository(User)
 		private readonly userRepository: Repository<User>,
-		@Inject(forwardRef(() => PostService)) private readonly postService: PostService,
+		@InjectRepository(PostEntity) private readonly postRepository: Repository<PostEntity>,
 		private readonly categoryService: CategoryService,
 	) {}
 	findOneBy(arg0: { username: string }) {
@@ -198,7 +199,7 @@ export class UserService {
 			return new HttpException('No permission', HttpStatus.BAD_REQUEST);
 		}
 		/* Soft deleting the post and the category post. */
-		const posts = await this.postService.find({
+		const posts = await this.postRepository.find({
 			where: {
 				owner: id,
 			},
@@ -206,7 +207,7 @@ export class UserService {
 		posts.forEach(async (post) => {
 			await this.categoryService.categoryPostSoftDelete({ post: post.id });
 		});
-		await this.postService.softDelete({
+		await this.postRepository.softDelete({
 			owner: id,
 		});
 		/* Soft deleting the user from the database. */
@@ -218,6 +219,7 @@ export class UserService {
 		if (user.role != 'admin') {
 			return new HttpException('No permission', HttpStatus.BAD_REQUEST);
 		}
+		/* Updating the user role to admin. */
 		const tmpUser = await this.userRepository.findOneBy({ id });
 		tmpUser.role = 'admin';
 		await this.userRepository.update(id, tmpUser);

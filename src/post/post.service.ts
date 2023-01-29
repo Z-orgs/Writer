@@ -189,21 +189,4 @@ export class PostService {
 		await this.postRepository.softDelete(id);
 		return new HttpException('Post was delete', HttpStatus.ACCEPTED);
 	}
-	async softDelete(
-		criteria:
-			| string
-			| number
-			| Date
-			| ObjectID
-			| string[]
-			| number[]
-			| Date[]
-			| ObjectID[]
-			| FindOptionsWhere<PostEntity>,
-	) {
-		return this.postRepository.softDelete(criteria);
-	}
-	async find(options?: FindManyOptions<PostEntity>) {
-		return await this.postRepository.find(options);
-	}
 }

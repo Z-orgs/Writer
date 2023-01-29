@@ -7,6 +7,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { UserModule } from 'src/user/user.module';
 import { CategoryModule } from 'src/category/category.module';
 import { LikeModule } from 'src/like/like.module';
+import { Repository } from 'typeorm';
 
 @Module({
 	imports: [

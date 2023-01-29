@@ -6,10 +6,11 @@ import { User } from './entities/user.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { PostModule } from 'src/post/post.module';
 import { CategoryModule } from 'src/category/category.module';
+import { PostEntity } from 'src/post/entities/post.entity';
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([User]),
+		TypeOrmModule.forFeature([User, PostEntity]),
 		forwardRef(() => AuthModule),
 		forwardRef(() => PostModule),
 		CategoryModule,
