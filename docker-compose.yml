@@ -14,7 +14,7 @@
 services:
   node:
     image: node:lts-hydrogen
-    command: sh -c "yarn install && yarn start:dev"
+    command: sh -c "yarn install && yarn start"
     ports:
       - 3000:3000
     working_dir: /app
