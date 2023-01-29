@@ -42,13 +42,14 @@ export class CommentController {
 		@Param('id') id: string,
 		@Body() updateSubComment: UpdateSubCommentDto,
 	) {
-		return this.commentService.updateSubComment(req.user, id, updateSubComment);
+		return this.commentService.updateSubComment(req.user.userId, id, updateSubComment);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Delete('sub/:id')
 	deleteSubComment(@Req() req, @Param('id') id: string) {
 		return this.commentService.deleteSubComment(req.user, id);
 	}
+	// for post
 	@Get(':id')
 	getFullCommentsByPostId(@Param('id') id: string) {
 		return this.commentService.getFullCommentsByPostId(id);

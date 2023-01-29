@@ -1,10 +1,8 @@
-import { Base } from 'src/base/base.entity';
 export class UpdateUserDto {
 	firstName: string;
 	lastName: string;
 	email: string;
 	username: string;
-	password: string;
 	gender: string;
 	nationalId: string;
 	phone: string;

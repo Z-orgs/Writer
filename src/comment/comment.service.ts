@@ -19,7 +19,7 @@ export class CommentService {
 	async createComment(user: any, comment: CreateCommentDto) {
 		/* Creating a new comment and inserting it into the database. */
 		const newComment = {
-			user: user.userId,
+			user,
 			...comment,
 		};
 		const result = await this.commentRepository.insert(newComment);
@@ -45,7 +45,7 @@ export class CommentService {
 			const comment = await this.commentRepository.findOneBy({ id });
 			/* This is checking if the user is the owner of the comment. If not, it will throw an
             error. */
-			if (comment.user != user.userId) {
+			if (comment.user != user) {
 				return new HttpException('Cannot delete this comment.', HttpStatus.BAD_REQUEST);
 			}
 			/* Deleting the comment from the database. */
@@ -63,7 +63,7 @@ export class CommentService {
 		/* Creating a new sub comment and inserting it into the database. */
 		const newSubComment = {
 			...subComment,
-			user: user.userId,
+			user,
 		};
 		const result = await this.subCommentRepository.insert(newSubComment);
 		/* Getting the comment that the sub comment is related to. */

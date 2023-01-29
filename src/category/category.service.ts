@@ -63,18 +63,4 @@ export class CategoryService {
 		await this.categoryPostRepository.softDelete({ category: id });
 		return new HttpException('Deleted', HttpStatus.ACCEPTED);
 	}
-	async categoryPostSoftDelete(
-		criteria:
-			| string
-			| number
-			| Date
-			| ObjectID
-			| string[]
-			| number[]
-			| Date[]
-			| ObjectID[]
-			| FindOptionsWhere<CategoryPost>,
-	) {
-		return await this.categoryPostRepository.softDelete(criteria);
-	}
 }

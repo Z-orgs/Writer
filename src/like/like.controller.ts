@@ -7,7 +7,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class LikeController {
 	constructor(private readonly likeService: LikeService) {}
 	@UseGuards(JwtAuthGuard)
-	@Post(':id')
+	@Post('like/:id')
 	likePost(@Req() req, @Param('id') id: string) {
 		return this.likeService.likePost(req.user, id);
 	}

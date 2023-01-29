@@ -21,6 +21,9 @@ export class AuthService {
 		if (!isEqual) {
 			return null;
 		}
+		if (user.banned) {
+			return null;
+		}
 		const { password, ...result } = user;
 		return result;
 	}

@@ -103,7 +103,6 @@ export class User extends Base {
 	banned: boolean;
 	@Column({
 		default: 'user',
-		update: false,
 	})
 	role: string;
 }

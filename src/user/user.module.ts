@@ -7,13 +7,18 @@ import { AuthModule } from 'src/auth/auth.module';
 import { PostModule } from 'src/post/post.module';
 import { CategoryModule } from 'src/category/category.module';
 import { PostEntity } from 'src/post/entities/post.entity';
+import { MulterModule } from '@nestjs/platform-express';
+import { CategoryPost } from 'src/category/entities/category.post.entity';
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([User, PostEntity]),
+		TypeOrmModule.forFeature([User, PostEntity, CategoryPost]),
 		forwardRef(() => AuthModule),
 		forwardRef(() => PostModule),
 		CategoryModule,
+		MulterModule.register({
+			dest: './src/upload',
+		}),
 	],
 	controllers: [UserController],
 	providers: [UserService],

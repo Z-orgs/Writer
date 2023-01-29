@@ -64,7 +64,7 @@ export class PostController {
 
 	//admin
 	@UseGuards(JwtAuthGuard)
-	@Get('admin')
+	@Get('admin/allPosts')
 	getAllPostsByAdmin(@Req() req) {
 		return this.postService.getAllPostsByAdmin(req.user);
 	}

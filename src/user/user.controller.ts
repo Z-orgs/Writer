@@ -4,9 +4,11 @@ import { UserDto } from './dto/user.dto';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { Delete, Param, Put } from '@nestjs/common/decorators';
+import { Delete, Param, Put, UploadedFile, UseInterceptors } from '@nestjs/common/decorators';
 import { User } from './entities/user.entity';
 import { ChangePasswordDto } from './dto/change.password.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UpdateUserDto } from './dto/update.user.dto';
 
 @Controller('user')
 export class UserController {
@@ -30,7 +32,7 @@ export class UserController {
 	}
 	@UseGuards(JwtAuthGuard)
 	@Put('update')
-	updateUser(@Req() req, @Body() user: User) {
+	updateUser(@Req() req, @Body() user: UpdateUserDto) {
 		return this.userService.update(req.user.userId, user);
 	}
 	@Get(':usernameOrId')
@@ -54,12 +56,13 @@ export class UserController {
 	}
 	@UseGuards(JwtAuthGuard)
 	@Post('uploadImage')
-	uploadImage(@Req() req, @Body() files: any) {
-		return this.userService.uploadImage(req.user, files);
+	@UseInterceptors(FileInterceptor('image'))
+	uploadImage(@UploadedFile() file: Express.Multer.File) {
+		return this.userService.uploadImage(file);
 	}
 	//admin
 	@UseGuards(JwtAuthGuard)
-	@Get('admin')
+	@Get('admin/allUsers')
 	getAllUsersByAdmin(@Req() req) {
 		return this.userService.getAllUsersByAdmin(req.user);
 	}

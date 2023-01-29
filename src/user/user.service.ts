@@ -1,4 +1,4 @@
-import { forwardRef, Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserDto } from './dto/user.dto';
@@ -7,11 +7,13 @@ import { User } from './entities/user.entity';
 import { HttpException } from '@nestjs/common/exceptions';
 import { HttpStatus } from '@nestjs/common/enums';
 import { ChangePasswordDto } from './dto/change.password.dto';
-import { PostService } from 'src/post/post.service';
 import { CategoryService } from 'src/category/category.service';
-import { unlinkSync } from 'fs';
-import imgur from 'imgur';
+import { unlinkSync, renameSync } from 'fs';
+import { uploadFile } from 'imgur';
 import { PostEntity } from 'src/post/entities/post.entity';
+import { plainToInstance } from 'class-transformer';
+import { UpdateUserDto } from './dto/update.user.dto';
+import { CategoryPost } from 'src/category/entities/category.post.entity';
 
 @Injectable()
 export class UserService {
@@ -20,11 +22,25 @@ export class UserService {
 		private readonly userRepository: Repository<User>,
 		@InjectRepository(PostEntity) private readonly postRepository: Repository<PostEntity>,
 		private readonly categoryService: CategoryService,
+		@InjectRepository(CategoryPost)
+		private readonly categoryPostRepository: Repository<CategoryPost>,
 	) {}
 	findOneBy(arg0: { username: string }) {
 		return this.userRepository.findOneBy(arg0);
 	}
-	async update(id: string, user: User) {
+	async update(id: string, user: UpdateUserDto) {
+		const validEmail = await this.userRepository.findOneBy({
+			email: user.email,
+		});
+		const validUsername = await this.userRepository.findOneBy({
+			username: user.username,
+		});
+		if (validEmail) {
+			throw new HttpException('Email already exist.', HttpStatus.BAD_REQUEST);
+		}
+		if (validUsername) {
+			throw new HttpException('Username already exist.', HttpStatus.BAD_REQUEST);
+		}
 		return this.userRepository.update(id, user);
 	}
 	async register(user: UserDto) {
@@ -144,7 +160,9 @@ export class UserService {
 				...targetUser,
 				...{ follower: JSON.stringify(tmpFollower) },
 			} as User;
-			/* Updating the user and target user in the database. */
+			/* Just a counter for the total follower and total following. */
+			user.totalFollowing--;
+			targetUser.totalFollower--;
 			this.userRepository.update(user.id, user);
 			this.userRepository.update(targetUser.id, targetUser);
 
@@ -205,7 +223,7 @@ export class UserService {
 			},
 		});
 		posts.forEach(async (post) => {
-			await this.categoryService.categoryPostSoftDelete({ post: post.id });
+			await this.categoryPostRepository.softDelete({ post: post.id });
 		});
 		await this.postRepository.softDelete({
 			owner: id,
@@ -221,16 +239,18 @@ export class UserService {
 		}
 		/* Updating the user role to admin. */
 		const tmpUser = await this.userRepository.findOneBy({ id });
+		tmpUser.banned = false;
 		tmpUser.role = 'admin';
 		await this.userRepository.update(id, tmpUser);
-		return new HttpException('Make admin successfully', HttpStatus.ACCEPTED);
+		return await this.userRepository.findOneBy({ id });
+		// return new HttpException('Make admin successfully', HttpStatus.ACCEPTED);
 	}
-	async uploadImage(user: any, files: any) {
-		const image = files.image;
-		const uploadPath = './src/public/files/' + image.name;
-		await image.mv(uploadPath);
-		const uploadResult = await imgur.uploadFile(uploadPath);
-		unlinkSync(uploadPath);
-		return uploadResult.link;
+	async uploadImage(file: any) {
+		const path = file.path;
+		const filename = `./src/upload/${Date.now()}.png`;
+		renameSync(path, filename);
+		const uploadResult = await uploadFile(filename);
+		unlinkSync(filename);
+		return { link: uploadResult.link };
 	}
 }

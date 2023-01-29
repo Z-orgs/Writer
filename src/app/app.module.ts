@@ -12,23 +12,28 @@ import { Comment } from 'src/comment/entities/comment.entity';
 import { Category } from 'src/category/entities/category.entity';
 import { CategoryPost } from 'src/category/entities/category.post.entity';
 import { SubComment } from 'src/comment/entities/sub.comment.entity';
+import { Constants } from './env.constants';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
 	imports: [
 		TypeOrmModule.forRoot({
 			type: 'mysql',
-			host: 'localhost',
+			host: Constants.HOST,
 			port: 3306,
-			username: 'root',
-			password: 'root',
-			database: 'writer',
+			username: Constants.USER,
+			password: Constants.PASSWORD,
+			database: Constants.DB,
 			entities: [User, PostEntity, LikeEntity, Comment, Category, CategoryPost, SubComment],
-			synchronize: true,
+			synchronize: false,
 		}),
 		UserModule,
 		PostModule,
 		CommentModule,
 		LikeModule,
 	],
+	controllers: [AppController],
+	providers: [AppService],
 })
 export class AppModule {}

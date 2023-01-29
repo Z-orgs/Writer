@@ -20,7 +20,7 @@ export class LikeService {
 		likeObj.post = id;
 		likeObj.user = user.userId;
 		/* Checking if the user has already liked the post. If they have, it will throw an error. */
-		if (this.checkLike(user.userId, id)) {
+		if (await this.checkLike(user.userId, id)) {
 			return new HttpException('User already liked this post.', HttpStatus.BAD_REQUEST);
 		}
 		/* This is getting the post by the id, incrementing the total likes, and then updating the post. */
@@ -42,12 +42,10 @@ export class LikeService {
 		return this.likeRepository.delete(likeObj.id);
 	}
 	async checkLike(userId: string, postId: string) {
-		/* This is checking if the user has liked the post. If they have, it will return the like object. If
-        they have not, it will return null. */
-		const likeObj = await this.likeRepository.findOneBy({
+		/* Checking if the user has liked the post. */
+		return await this.likeRepository.findOneBy({
 			user: userId,
 			post: postId,
 		});
-		return likeObj ? likeObj : null;
 	}
 }
