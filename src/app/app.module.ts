@@ -26,7 +26,7 @@ import { AppService } from './app.service';
 			password: Constants.PASSWORD,
 			database: Constants.DB,
 			entities: [User, PostEntity, LikeEntity, Comment, Category, CategoryPost, SubComment],
-			synchronize: false,
+			synchronize: true,
 		}),
 		UserModule,
 		PostModule,

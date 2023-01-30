@@ -63,4 +63,14 @@ export class CategoryService {
 		await this.categoryPostRepository.softDelete({ category: id });
 		return new HttpException('Deleted', HttpStatus.ACCEPTED);
 	}
+	async getAllCategories() {
+		return await (
+			await Promise.all(await this.categoryRepository.find())
+		).map((category) => {
+			return {
+				id: category.id,
+				category: category.category,
+			};
+		});
+	}
 }

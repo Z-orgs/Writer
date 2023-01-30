@@ -1,4 +1,4 @@
-import { Controller, Post, Param, Delete, UseGuards, Req, Put, Body } from '@nestjs/common';
+import { Controller, Post, Param, Delete, UseGuards, Req, Put, Body, Get } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CategoryService } from './category.service';
 import { CreateCategory } from './dto/create.category.dto';
@@ -21,5 +21,10 @@ export class CategoryController {
 	@Delete(':id')
 	deleteCategory(@Req() req, @Param('id') id: string) {
 		return this.categoryService.deleteCategory(req.user, id);
+	}
+	@UseGuards(JwtAuthGuard)
+	@Get()
+	getAllCategories() {
+		return this.categoryService.getAllCategories();
 	}
 }
