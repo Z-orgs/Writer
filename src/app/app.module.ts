@@ -15,6 +15,7 @@ import { SubComment } from 'src/comment/entities/sub.comment.entity';
 import { Constants } from './env.constants';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CategoryModule } from 'src/category/category.module';
 
 @Module({
 	imports: [
@@ -32,6 +33,7 @@ import { AppService } from './app.service';
 		PostModule,
 		CommentModule,
 		LikeModule,
+		CategoryModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
