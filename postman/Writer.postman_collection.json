@@ -802,7 +802,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InN5aGFuaGNicSIsInN1YiI6IjUwMGQ5YWVkLTg2YTAtNGE3MS1hZjRkLTE3YjM5ZjQwN2Y2MSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY3NTAxMzk3MiwiZXhwIjoxNjc1MTAwMzcyfQ.-Hx0QG7_YkbmL8uGI_WVKHgyOGYQ5og5h-P5jxSseAE",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InN5aGFuaGNicSIsInN1YiI6ImVjMWJjZDQzLTA4NzMtNGJlMy1hZDc3LTAxMjA5MjExYzQ0YiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY3NTA1NTc3MSwiZXhwIjoxNjc1MTQyMTcxfQ.nC8en24z2nd_Rdw9yVBsJZVnBRyx9LJAHPT7qLTCwgE",
 									"type": "string"
 								}
 							]
@@ -893,6 +893,34 @@
 							"path": [
 								"category",
 								"35b0461a-ad57-411a-a379-876c4c1e9a14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InN5aGFuaGNicSIsInN1YiI6ImVjMWJjZDQzLTA4NzMtNGJlMy1hZDc3LTAxMjA5MjExYzQ0YiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY3NTA1NTc3MSwiZXhwIjoxNjc1MTQyMTcxfQ.nC8en24z2nd_Rdw9yVBsJZVnBRyx9LJAHPT7qLTCwgE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/category",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"category"
 							]
 						}
 					},
@@ -1146,6 +1174,21 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Test connection",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000",
+					"host": [
+						"localhost"
+					],
+					"port": "3000"
+				}
+			},
+			"response": []
 		}
 	]
 }
