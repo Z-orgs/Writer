@@ -1,6 +1,6 @@
 import { Injectable, Req } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { compareSync } from 'bcrypt';
+import { compareSync } from 'bcryptjs';
 import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 
