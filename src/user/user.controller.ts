@@ -5,7 +5,6 @@ import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Delete, Param, Put, UploadedFile, UseInterceptors } from '@nestjs/common/decorators';
-import { User } from './entities/user.entity';
 import { ChangePasswordDto } from './dto/change.password.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateUserDto } from './dto/update.user.dto';

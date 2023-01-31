@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryService } from 'src/category/category.service';
 import { LikeService } from 'src/like/like.service';
 import { UserService } from 'src/user/user.service';
-import { FindManyOptions, FindOptionsWhere, ObjectID, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CategoryDto } from './dto/category.dto';
 import { PostDto } from './dto/post.dto';
 import { PostEntity } from './entities/post.entity';

@@ -27,7 +27,7 @@ import { CategoryModule } from 'src/category/category.module';
 			password: Constants.PASSWORD,
 			database: Constants.DB,
 			entities: [User, PostEntity, LikeEntity, Comment, Category, CategoryPost, SubComment],
-			synchronize: true,
+			synchronize: false,
 		}),
 		UserModule,
 		PostModule,

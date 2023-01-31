@@ -7,7 +7,6 @@ import { User } from './entities/user.entity';
 import { HttpException } from '@nestjs/common/exceptions';
 import { HttpStatus } from '@nestjs/common/enums';
 import { ChangePasswordDto } from './dto/change.password.dto';
-import { CategoryService } from 'src/category/category.service';
 import { unlinkSync, renameSync } from 'fs';
 import { uploadFile } from 'imgur';
 import { PostEntity } from 'src/post/entities/post.entity';
