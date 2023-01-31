@@ -11,7 +11,6 @@ import { CategoryService } from 'src/category/category.service';
 import { unlinkSync, renameSync } from 'fs';
 import { uploadFile } from 'imgur';
 import { PostEntity } from 'src/post/entities/post.entity';
-import { plainToInstance } from 'class-transformer';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { CategoryPost } from 'src/category/entities/category.post.entity';
 
@@ -21,7 +20,6 @@ export class UserService {
 		@InjectRepository(User)
 		private readonly userRepository: Repository<User>,
 		@InjectRepository(PostEntity) private readonly postRepository: Repository<PostEntity>,
-		private readonly categoryService: CategoryService,
 		@InjectRepository(CategoryPost)
 		private readonly categoryPostRepository: Repository<CategoryPost>,
 	) {}
