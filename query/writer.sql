@@ -100,12 +100,12 @@ CREATE TABLE
 
 --
 
--- Table structure for table `likepost`
+-- Table structure for table `like_post`
 
 --
 
 CREATE TABLE
-    `likepost` (
+    `like_post` (
         `id` varchar(36) NOT NULL,
         `created_at` datetime(6) NOT NULL DEFAULT current_timestamp(6),
         `updated_at` datetime(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6),
@@ -241,11 +241,11 @@ ADD KEY `user` (`user`);
 
 --
 
--- Indexes for table `likepost`
+-- Indexes for table `like_post`
 
 --
 
-ALTER TABLE `likepost`
+ALTER TABLE `like_post`
 ADD PRIMARY KEY (`id`),
 ADD KEY `user` (`user`),
 ADD KEY `post` (`post`);
@@ -266,8 +266,7 @@ ALTER TABLE `post` ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `sub_comment`
 ADD PRIMARY KEY (`id`),
-ADD
-    KEY `comment` (`comment`),
+ADD KEY `comment` (`comment`),
 ADD KEY `user` (`user`);
 
 --
@@ -310,15 +309,15 @@ ADD
 
 --
 
--- Constraints for table `likepost`
+-- Constraints for table `like_post`
 
 --
 
-ALTER TABLE `likepost`
+ALTER TABLE `like_post`
 ADD
-    CONSTRAINT `likepost_ibfk_1` FOREIGN KEY (`user`) REFERENCES `user` (`id`),
+    CONSTRAINT `like_post_ibfk_1` FOREIGN KEY (`user`) REFERENCES `user` (`id`),
 ADD
-    CONSTRAINT `likepost_ibfk_2` FOREIGN KEY (`post`) REFERENCES `post` (`id`);
+    CONSTRAINT `like_post_ibfk_2` FOREIGN KEY (`post`) REFERENCES `post` (`id`);
 
 --
 
