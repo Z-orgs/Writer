@@ -8,6 +8,7 @@ import { Delete, Param, Put, UploadedFile, UseInterceptors } from '@nestjs/commo
 import { ChangePasswordDto } from './dto/change.password.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateUserDto } from './dto/update.user.dto';
+import { FileTypeValidator, MaxFileSizeValidator, ParseFilePipe } from '@nestjs/common/pipes';
 
 @Controller('user')
 export class UserController {
@@ -56,7 +57,17 @@ export class UserController {
 	@UseGuards(JwtAuthGuard)
 	@Post('uploadImage')
 	@UseInterceptors(FileInterceptor('image'))
-	uploadImage(@UploadedFile() file: Express.Multer.File) {
+	uploadImage(
+		@UploadedFile(
+			new ParseFilePipe({
+				validators: [
+					new MaxFileSizeValidator({ maxSize: 1000000 }),
+					new FileTypeValidator({ fileType: /(jpg|jpeg|png|gif)$/ }),
+				],
+			}),
+		)
+		file: Express.Multer.File,
+	) {
 		return this.userService.uploadImage(file);
 	}
 	//admin
