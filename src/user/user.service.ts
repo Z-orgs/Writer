@@ -303,7 +303,7 @@ export class UserService {
 	}
 	/**
 	 * It checks if the user is an admin or not. If the user is not an admin, it will return an error. If
-	 * the user is an admin, it will update the user role to admin
+	 * the user is an admin, it will update the target user role to admin
 	 * @param {any} user - any - This is the user that is currently logged in.
 	 * @param {string} id - The id of the user that you want to make an admin.
 	 * @returns The user object.
@@ -322,11 +322,11 @@ export class UserService {
 		// return new HttpException('Make admin successfully', HttpStatus.ACCEPTED);
 	}
 	/**
-	 * It takes a file, renames it, uploads it, and then deletes it
-	 * @param {any} file - The file object that was uploaded.
+	 * It takes a file, renames it, uploads it to imgur, deletes the file, and returns the link
+	 * @param file - Express.Multer.File
 	 * @returns The link to the uploaded image.
 	 */
-	async uploadImage(file: any) {
+	async uploadImage(file: Express.Multer.File) {
 		const path = file.path;
 		const filename = `./src/upload/${Date.now()}.png`;
 		renameSync(path, filename);
