@@ -15,6 +15,12 @@ import { CategoryPost } from 'src/category/entities/category.post.entity';
 
 @Injectable()
 export class UserService {
+	/**
+	 * A constructor function that is used to inject the repositories into the class.
+	 * @param userRepository - Repository<User>
+	 * @param postRepository - Repository<PostEntity>
+	 * @param categoryPostRepository - Repository<CategoryPost>
+	 */
 	constructor(
 		@InjectRepository(User)
 		private readonly userRepository: Repository<User>,
@@ -22,9 +28,20 @@ export class UserService {
 		@InjectRepository(CategoryPost)
 		private readonly categoryPostRepository: Repository<CategoryPost>,
 	) {}
-	findOneBy(arg0: { username: string }) {
-		return this.userRepository.findOneBy(arg0);
+	/**
+	 * It returns a promise that resolves to a user object
+	 * @param objUsername - { username: string }
+	 * @returns The userRepository.findOneBy(objUsername) is being returned.
+	 */
+	findOneBy(objUsername: { username: string }) {
+		return this.userRepository.findOneBy(objUsername);
 	}
+	/**
+	 * It updates a user's information
+	 * @param {string} id - The id of the user you want to update.
+	 * @param {UpdateUserDto} user - UpdateUserDto
+	 * @returns The userRepository.update() method is being returned.
+	 */
 	async update(id: string, user: UpdateUserDto) {
 		const validEmail = await this.userRepository.findOneBy({
 			email: user.email,
@@ -40,6 +57,12 @@ export class UserService {
 		}
 		return this.userRepository.update(id, user);
 	}
+	/**
+	 * It takes a user object, hashes the password, checks if the email and username already exist in the
+	 * database, creates a new user object and then insert it into the database
+	 * @param {UserDto} user - UserDto
+	 * @returns a new HttpException object.
+	 */
 	async register(user: UserDto) {
 		/* Hashing the password using bcrypt. */
 		user.password = await bcrypt.hash(user.password, 10);
@@ -65,6 +88,11 @@ export class UserService {
 		await this.userRepository.insert(tmpUser as User);
 		return new HttpException('Register successfully', HttpStatus.ACCEPTED);
 	}
+	/**
+	 * It gets the user from the database and converts the string to array
+	 * @param {string} usernameOrId - string - The username or id of the user.
+	 * @returns The user object.
+	 */
 	async getUser(usernameOrId: string) {
 		try {
 			/* Getting the user from the database. */
@@ -89,6 +117,15 @@ export class UserService {
 			return new HttpException('User not found.', HttpStatus.BAD_REQUEST);
 		}
 	}
+	/**
+	 * The function will get the user and target user from the database, convert the string to array, check
+	 * if the user already followed the target user, add the user id to the follower array and the target
+	 * user id to the following array, update the user and target user in the database, and return the
+	 * result
+	 * @param {string} username - The username of the user who wants to follow the target user.
+	 * @param {string} targetUsername - The username of the user that you want to follow.
+	 * @returns a promise.
+	 */
 	async doFollow(username: string, targetUsername: string) {
 		try {
 			/* Getting the user and target user from the database. */
@@ -129,6 +166,14 @@ export class UserService {
 			return new HttpException('Something was wrong.', HttpStatus.BAD_REQUEST);
 		}
 	}
+	/**
+	 * The function will get the user and target user from the database, convert the string to array, check
+	 * if the user is following the target user, remove the user id from the following array and the target
+	 * user id from the follower array, and update the database
+	 * @param {string} username - The username of the user who wants to unfollow the target user.
+	 * @param {string} targetUsername - The username of the user that you want to unfollow.
+	 * @returns a promise.
+	 */
 	async doUnFollow(username: string, targetUsername: string) {
 		try {
 			/* Getting the user and target user from the database. */
@@ -168,6 +213,15 @@ export class UserService {
 			return new HttpException('Something was wrong.', HttpStatus.BAD_REQUEST);
 		}
 	}
+	/**
+	 * It gets the user from the database, checks if the old password is the same as the password in the
+	 * database, checks if the new password and the re-new password are the same, hashes the new password
+	 * and then update the user in the database
+	 * @param {any} userId - The id of the user that is changing the password.
+	 * @param {ChangePasswordDto} changePassword - ChangePasswordDto - This is the object that we will send
+	 * to the server.
+	 * @returns The user that was updated.
+	 */
 	async changePassword(userId: any, changePassword: ChangePasswordDto) {
 		/* Getting the user from the database. */
 		const user = await this.userRepository.findOneBy({ id: userId });
@@ -185,6 +239,11 @@ export class UserService {
 		await this.userRepository.update(user.id, user);
 		return await this.userRepository.findOneBy({ id: user.id });
 	}
+	/**
+	 * It gets all the users from the database and sorts them by the createdAt date
+	 * @param {any} user - any - This is the user that is logged in.
+	 * @returns all the users from the database.
+	 */
 	async getAllUsersByAdmin(user: any) {
 		/* Checking if the user is an admin or not. If the user is not an admin, it will return an error. */
 		if (user.role != 'admin') {
@@ -197,6 +256,13 @@ export class UserService {
 			},
 		});
 	}
+	/**
+	 * It checks if the user is an admin, if it is, it will get the user from the database and then update
+	 * the user in the database
+	 * @param {any} user - any - This is the user that is currently logged in.
+	 * @param {string} id - The id of the user that you want to lock.
+	 * @returns The user that has been locked.
+	 */
 	async lockUser(user: any, id: string) {
 		/* Checking if the user is an admin or not. If the user is not an admin, it will return an error. */
 		if (user.role != 'admin') {
@@ -208,6 +274,12 @@ export class UserService {
 		await this.userRepository.update(tmpUser.id, tmpUser);
 		return tmpUser;
 	}
+	/**
+	 * It deletes a user from the database
+	 * @param {any} user - any - The user that is logged in.
+	 * @param {string} id - The id of the user that you want to delete.
+	 * @returns The user is being returned.
+	 */
 	async deleteUser(user: any, id: string) {
 		/* Checking if the user is an admin or not. If the user is not an admin, it will return an error. */
 		if (user.role != 'admin') {
@@ -229,6 +301,13 @@ export class UserService {
 		await this.userRepository.softDelete({ id });
 		return new HttpException('User was delete', HttpStatus.ACCEPTED);
 	}
+	/**
+	 * It checks if the user is an admin or not. If the user is not an admin, it will return an error. If
+	 * the user is an admin, it will update the user role to admin
+	 * @param {any} user - any - This is the user that is currently logged in.
+	 * @param {string} id - The id of the user that you want to make an admin.
+	 * @returns The user object.
+	 */
 	async makeAdmin(user: any, id: string) {
 		/* Checking if the user is an admin or not. If the user is not an admin, it will return an error. */
 		if (user.role != 'admin') {
@@ -242,6 +321,11 @@ export class UserService {
 		return await this.userRepository.findOneBy({ id });
 		// return new HttpException('Make admin successfully', HttpStatus.ACCEPTED);
 	}
+	/**
+	 * It takes a file, renames it, uploads it, and then deletes it
+	 * @param {any} file - The file object that was uploaded.
+	 * @returns The link to the uploaded image.
+	 */
 	async uploadImage(file: any) {
 		const path = file.path;
 		const filename = `./src/upload/${Date.now()}.png`;

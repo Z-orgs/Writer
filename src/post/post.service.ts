@@ -12,6 +12,14 @@ import { PostEntity } from './entities/post.entity';
 
 @Injectable()
 export class PostService {
+	/**
+	 * The function is a constructor for the PostService class. It takes in a PostRepository, a
+	 * UserService, a CategoryService, and a LikeService
+	 * @param postRepository - Repository<PostEntity>
+	 * @param {UserService} userService - UserService
+	 * @param {CategoryService} categoryService - CategoryService
+	 * @param {LikeService} likeService - LikeService
+	 */
 	constructor(
 		@InjectRepository(PostEntity)
 		private readonly postRepository: Repository<PostEntity>,
@@ -20,6 +28,14 @@ export class PostService {
 		@Inject(forwardRef(() => LikeService))
 		private readonly likeService: LikeService,
 	) {}
+	/**
+	 * I'm trying to create a post and insert the categories of the post into the category_post table
+	 * @param req - The request object.
+	 * @param {PostDto} post - PostDto: This is the post object that we are going to create.
+	 * @param {CategoryDto} categories - CategoryDto
+	 * @returns a new HttpException with the message 'Create post successfully' and the status code
+	 * ACCEPTED.
+	 */
 	async create(req, post: PostDto, categories: CategoryDto) {
 		/* Creating a new post object with the owner, like and comment properties. */
 		const newPost = {
@@ -41,14 +57,22 @@ export class PostService {
 
 		const listCategory = JSON.parse(categories.categories);
 
-		listCategory.forEach(async (category) => {
-			await this.categoryService.insertCategoryPost({
-				post: insertedPost.id,
-				category: category,
-			});
-		});
+		await Promise.all(
+			listCategory.forEach(async (category) => {
+				await this.categoryService.insertCategoryPost({
+					post: insertedPost.id,
+					category: category,
+				});
+			}),
+		);
 		return new HttpException('Create post successfully', HttpStatus.ACCEPTED);
 	}
+	/**
+	 * It gets the posts of the users that the current user is following and all the posts that have been
+	 * approved
+	 * @param {any} req - any -&gt; The request object.
+	 * @returns An object with two properties: followingPosts and posts.
+	 */
 	async getPostsByFollowing(req: any) {
 		/* Getting the user's following list. */
 		const user = await this.userService.findOneBy({
@@ -76,14 +100,46 @@ export class PostService {
 		});
 		return { followingPosts, posts };
 	}
+	/**
+	 * > Get a post by its id
+	 * @param {string} id - string - The id of the post we want to retrieve
+	 * @returns The post object
+	 */
 	async getPostById(id: string) {
 		return await this.postRepository.findOneBy({ id });
 	}
+	/**
+	 * It gets a post by id and checks if the user has liked the post
+	 * @param {any} req - any - this is the request object that is passed to the controller method.
+	 * @param {string} id - string - the id of the post
+	 * @returns The post object with the isLike property added to it.
+	 */
 	async getPostByIdLogin(req: any, id: string) {
 		const post = await this.postRepository.findOneBy({ id });
 		const isLike = (await this.likeService.checkLike(req.user.userId, id)) ? true : false;
 		return { ...post, isLike };
 	}
+	/**
+	 * It returns all posts that have a status of approved, ordered by the date they were created.
+	 *
+	 * The first line of the function is a TypeScript type annotation. It tells TypeScript that the
+	 * function will return a promise that resolves to an array of Post objects.
+	 *
+	 * The second line is the function declaration. It's an async function, which means it returns a
+	 * promise.
+	 *
+	 * The third line is the function body. It uses the await keyword to wait for the promise returned by
+	 * the find() function to resolve.
+	 *
+	 * The find() function is a method of the PostRepository object. It returns a promise that resolves to
+	 * an array of Post objects.
+	 *
+	 * The find() function takes an object as an argument. The object has two properties: where and order.
+	 *
+	 * The where property is an object that specifies the conditions that must be met for a Post object to
+	 * be included in the
+	 * @returns An array of posts.
+	 */
 	async getPosts() {
 		const posts = await this.postRepository.find({
 			where: { status: 'approved' },
@@ -93,6 +149,14 @@ export class PostService {
 		});
 		return posts;
 	}
+	/**
+	 * It updates the post by the id, if the user is the owner of the post
+	 * @param {any} user - any - The user object that is passed from the controller.
+	 * @param {string} id - The id of the post.
+	 * @param {PostEntity | PostDto} post - PostEntity | PostDto
+	 * @param {boolean} [passing=true] - boolean = true
+	 * @returns an HttpException.
+	 */
 	async updatePost(user: any, id: string, post: PostEntity | PostDto, passing: boolean = true) {
 		let tmpPost = null;
 		if (!passing) {
@@ -114,6 +178,13 @@ export class PostService {
 			return new HttpException('Something was wrong', HttpStatus.BAD_REQUEST);
 		}
 	}
+	/**
+	 * It deletes a post from the database
+	 * @param {any} user - any - The user object that is passed from the controller.
+	 * @param {string} id - The id of the post that we want to delete.
+	 * @returns an error if the user is not the owner of the post. If the user is the owner, it will
+	 * delete the post from the database.
+	 */
 	async deletePost(user: any, id: string) {
 		/* Getting the post by the id. */
 		const tmpPost = await this.postRepository.findOneBy({ id });
@@ -129,6 +200,11 @@ export class PostService {
 			return new HttpException('Something was wrong', HttpStatus.BAD_REQUEST);
 		}
 	}
+	/**
+	 * It gets a user by username, then gets all posts by that user
+	 * @param {string} username - string
+	 * @returns An array of posts.
+	 */
 	async getPostByUsername(username: string) {
 		const user = await this.userService.findOneBy({ username: username });
 		return await this.postRepository.find({
@@ -138,6 +214,11 @@ export class PostService {
 			},
 		});
 	}
+	/**
+	 * It gets all the posts that have the categoryId and returns them.
+	 * @param {string} categoryId - The id of the category.
+	 * @returns An array of posts.
+	 */
 	async getPostsByCategory(categoryId: string) {
 		/* Checking if the category exists or not. */
 		const category = await this.categoryService.getCategoryById(categoryId);
@@ -157,6 +238,11 @@ export class PostService {
 			),
 		);
 	}
+	/**
+	 * If the user is an admin, return all the posts in the database
+	 * @param {any} user - any - This is the user that is logged in.
+	 * @returns All the posts in the database.
+	 */
 	async getAllPostsByAdmin(user: any) {
 		/* Checking if the user is an admin or not. If not, it will return an error. */
 		if (user.role != 'admin') {
@@ -169,6 +255,13 @@ export class PostService {
 			},
 		});
 	}
+	/**
+	 * It checks if the user is an admin or not. If not, it will return an error. If the user is an admin,
+	 * it will update the post status to approved
+	 * @param {any} user - any - This is the user object that is passed from the controller.
+	 * @param {string} id - The id of the post that needs to be approved.
+	 * @returns The updated post.
+	 */
 	async approvePost(user: any, id: string) {
 		/* Checking if the user is an admin or not. If not, it will return an error. */
 		if (user.role != 'admin') {
@@ -180,6 +273,14 @@ export class PostService {
 		await this.postRepository.update(id, post);
 		return await this.postRepository.findOneBy({ id });
 	}
+	/**
+	 * It checks if the user is an admin or not. If not, it will return an error. If the user is an admin,
+	 * it will delete the post from the database
+	 * @param {any} user - any - This is the user that is logged in.
+	 * @param {string} id - The id of the post that we want to delete.
+	 * @returns an error if the user is not an admin. If the user is an admin, it will delete the post from
+	 * the database.
+	 */
 	async deletePostByAdmin(user: any, id: string) {
 		/* Checking if the user is an admin or not. If not, it will return an error. */
 		if (user.role != 'admin') {

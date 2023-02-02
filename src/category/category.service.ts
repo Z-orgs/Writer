@@ -9,12 +9,24 @@ import { CategoryPost } from './entities/category.post.entity';
 
 @Injectable()
 export class CategoryService {
+	/**
+	 * A constructor function that is used to inject the CategoryPost and Category repositories into the
+	 * CategoryPostService class.
+	 * @param categoryPostRepository - Repository<CategoryPost>
+	 * @param categoryRepository - Repository<Category>
+	 */
 	constructor(
 		@InjectRepository(CategoryPost)
 		private readonly categoryPostRepository: Repository<CategoryPost>,
 		@InjectRepository(Category)
 		private readonly categoryRepository: Repository<Category>,
 	) {}
+	/**
+	 * It checks if the post and category already exist in the database, if they do, it returns an error,
+	 * if they don't, it inserts them into the database
+	 * @param {CategoryPostDto} input - CategoryPostDto
+	 * @returns The return type is a Promise.
+	 */
 	async insertCategoryPost(input: CategoryPostDto) {
 		/* Checking if the post and category already exist in the database. */
 		const checkItem = await this.categoryPostRepository.findOneBy({
@@ -28,12 +40,29 @@ export class CategoryService {
 		await this.categoryPostRepository.insert(input);
 		return new HttpException('Inserted', HttpStatus.ACCEPTED);
 	}
+	/**
+	 * It returns a category by its id
+	 * @param {string} id - The id of the category you want to get.
+	 * @returns The categoryRepository.findOneBy() method returns a Promise.
+	 */
 	getCategoryById(id: string) {
 		return this.categoryRepository.findOneBy({ id });
 	}
+	/**
+	 * It returns a list of posts that are associated with a category
+	 * @param {string} id - string - the id of the category
+	 * @returns An array of CategoryPost objects.
+	 */
 	getPostByCategoryId(id: string) {
 		return this.categoryPostRepository.findBy({ category: id });
 	}
+	/**
+	 * It creates a category
+	 * @param {any} user - any - This is the user object that is passed in from the auth guard.
+	 * @param {CreateCategory} category - CreateCategory - This is the type of the category that we're
+	 * creating.
+	 * @returns The category that was just created.
+	 */
 	async createCategory(user: any, category: CreateCategory) {
 		/* Checking if the user is an admin. */
 		if (user.role != 'admin') {
@@ -43,6 +72,14 @@ export class CategoryService {
 		await this.categoryRepository.insert(category);
 		return this.categoryRepository.findOneBy({ category: category.category });
 	}
+	/**
+	 * It updates a category with the given id and updateCategory
+	 * @param {any} user - any - The user that is logged in.
+	 * @param {string} id - The id of the category you want to update.
+	 * @param {UpdateCategory} updateCategory - This is the object that contains the new values for the
+	 * category.
+	 * @returns The updated category.
+	 */
 	async updateCategory(user: any, id: string, updateCategory: UpdateCategory) {
 		/* Checking if the user is an admin. */
 		if (user.role != 'admin') {
@@ -52,6 +89,12 @@ export class CategoryService {
 		await this.categoryRepository.update(id, updateCategory);
 		return this.categoryRepository.findOneBy({ id });
 	}
+	/**
+	 * It deletes a category from the database
+	 * @param {any} user - any - The user object that is passed in the request.
+	 * @param {string} id - The id of the category that you want to delete.
+	 * @returns The category is being returned.
+	 */
 	async deleteCategory(user: any, id: string) {
 		/* Checking if the user is an admin. */
 		if (user.role != 'admin') {
@@ -63,10 +106,13 @@ export class CategoryService {
 		await this.categoryPostRepository.softDelete({ category: id });
 		return new HttpException('Deleted', HttpStatus.ACCEPTED);
 	}
+	/**
+	 * Returning the category id and category name.
+	 * @returns An array of objects.
+	 */
 	async getAllCategories() {
-		return await (
-			await Promise.all(await this.categoryRepository.find())
-		).map((category) => {
+		/* Returning the category id and category name. */
+		return (await Promise.all(await this.categoryRepository.find())).map((category) => {
 			return {
 				id: category.id,
 				category: category.category,
