@@ -9,6 +9,7 @@ import { ChangePasswordDto } from './dto/change.password.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { FileTypeValidator, MaxFileSizeValidator, ParseFilePipe } from '@nestjs/common/pipes';
+import { Request } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -22,18 +23,18 @@ export class UserController {
 	}
 	@UseGuards(LocalAuthGuard)
 	@Post('login')
-	async login(@Req() req) {
+	async login(@Req() req: Request) {
 		return this.authService.login(req.user);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Get('profile')
-	getProfile(@Req() req) {
+	getProfile(@Req() req: Request) {
 		return req.user;
 	}
 	@UseGuards(JwtAuthGuard)
 	@Put('update')
-	updateUser(@Req() req, @Body() user: UpdateUserDto) {
-		return this.userService.update(req.user.userId, user);
+	updateUser(@Req() req: Request, @Body() user: UpdateUserDto) {
+		return this.userService.update(req.user.id, user);
 	}
 	@Get(':usernameOrId')
 	getUser(@Param('usernameOrId') usernameOrId: string) {
@@ -41,18 +42,18 @@ export class UserController {
 	}
 	@UseGuards(JwtAuthGuard)
 	@Post('follow/:username')
-	doFollow(@Req() req, @Param('username') username: string) {
+	doFollow(@Req() req: Request, @Param('username') username: string) {
 		return this.userService.doFollow(req.user.username, username);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Post('unFollow/:username')
-	doUnFollow(@Req() req, @Param('username') username: string) {
+	doUnFollow(@Req() req: Request, @Param('username') username: string) {
 		return this.userService.doUnFollow(req.user.username, username);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Post('changePassword')
-	changePassword(@Req() req, @Body() changePassword: ChangePasswordDto) {
-		return this.userService.changePassword(req.user.userId, changePassword);
+	changePassword(@Req() req: Request, @Body() changePassword: ChangePasswordDto) {
+		return this.userService.changePassword(req.user.id, changePassword);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Post('uploadImage')
@@ -78,17 +79,17 @@ export class UserController {
 	}
 	@UseGuards(JwtAuthGuard)
 	@Put('admin/:id')
-	lockUser(@Req() req, @Param('id') id: string) {
+	lockUser(@Req() req: Request, @Param('id') id: string) {
 		return this.userService.lockUser(req.user, id);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Delete('admin/:id')
-	deleteUser(@Req() req, @Param('id') id: string) {
+	deleteUser(@Req() req: Request, @Param('id') id: string) {
 		return this.userService.deleteUser(req.user, id);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Post('admin/:id')
-	makeAdmin(@Req() req, @Param('id') id: string) {
+	makeAdmin(@Req() req: Request, @Param('id') id: string) {
 		return this.userService.makeAdmin(req.user, id);
 	}
 }

@@ -5,7 +5,7 @@ import { CategoryDto } from './dto/category.dto';
 import { CreatePostDto } from './dto/create.post.dto';
 import { PostDto } from './dto/post.dto';
 import { PostService } from './post.service';
-
+import { Request } from 'express';
 @Controller('post')
 export class PostController {
 	constructor(private readonly postService: PostService) {}
@@ -13,34 +13,34 @@ export class PostController {
 	//login
 	@UseGuards(JwtAuthGuard)
 	@Post('login')
-	createPost(@Req() req, @Body() post: CreatePostDto) {
+	createPost(@Req() req: Request, @Body() post: CreatePostDto) {
 		const newPost: PostDto = {
 			title: post.title,
 			content: post.content,
 			description: post.description,
-			owner: req.user.userId,
+			owner: req.user.id,
 		};
 		const categories: CategoryDto = { categories: post.categories };
 		return this.postService.create(req, newPost, categories);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Get('login/following')
-	getPostsByFollowing(@Req() req) {
+	getPostsByFollowing(@Req() req: Request) {
 		return this.postService.getPostsByFollowing(req);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Put('login/:id')
-	updatePost(@Req() req, @Param('id') id: string, @Body() post: PostDto) {
+	updatePost(@Req() req: Request, @Param('id') id: string, @Body() post: PostDto) {
 		return this.postService.updatePost(req.user, id, post, false);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Delete('login/:id')
-	deletePost(@Req() req, @Param('id') id: string) {
+	deletePost(@Req() req: Request, @Param('id') id: string) {
 		return this.postService.deletePost(req.user, id);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Get('login/:id')
-	async getPostByIdLogin(@Req() req, @Param('id') id: string) {
+	async getPostByIdLogin(@Req() req: Request, @Param('id') id: string) {
 		return this.postService.getPostByIdLogin(req, id);
 	}
 
@@ -70,12 +70,12 @@ export class PostController {
 	}
 	@UseGuards(JwtAuthGuard)
 	@Put('admin/:id')
-	approvePost(@Req() req, @Param('id') id: string) {
+	approvePost(@Req() req: Request, @Param('id') id: string) {
 		return this.postService.approvePost(req.user, id);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Delete('admin/:id')
-	deletePostByAdmin(@Req() req, @Param('id') id: string) {
+	deletePostByAdmin(@Req() req: Request, @Param('id') id: string) {
 		return this.postService.deletePostByAdmin(req.user, id);
 	}
 }

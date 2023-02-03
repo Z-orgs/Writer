@@ -2,6 +2,7 @@ import { Controller, Post, Param, Req, UseGuards, Put, Get } from '@nestjs/commo
 import { Body, Delete } from '@nestjs/common/decorators';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CommentService } from './comment.service';
+import { Request } from 'express';
 import { CreateCommentDto, CreateSubCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto, UpdateSubCommentDto } from './dto/update-comment.dto';
 
@@ -11,42 +12,42 @@ export class CommentController {
 	// comment
 	@UseGuards(JwtAuthGuard)
 	@Post()
-	createComment(@Req() req, @Body() comment: CreateCommentDto) {
-		return this.commentService.createComment(req.user.userId, comment);
+	createComment(@Req() req: Request, @Body() comment: CreateCommentDto) {
+		return this.commentService.createComment(req.user.id, comment);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Put(':id')
 	updateComment(
-		@Req() req,
+		@Req() req: Request,
 		@Param('id') id: string,
 		@Body()
 		updateComment: UpdateCommentDto,
 	) {
-		return this.commentService.updateComment(req.user.userId, id, updateComment);
+		return this.commentService.updateComment(req.user.id, id, updateComment);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Delete(':id')
-	deleteComment(@Req() req, @Param('id') id: string) {
-		return this.commentService.deleteComment(req.user.userId, id);
+	deleteComment(@Req() req: Request, @Param('id') id: string) {
+		return this.commentService.deleteComment(req.user.id, id);
 	}
 	//sub comment
 	@UseGuards(JwtAuthGuard)
 	@Post('sub')
-	createSubComment(@Req() req, @Body() subComment: CreateSubCommentDto) {
-		return this.commentService.createSubComment(req.user.userId, subComment);
+	createSubComment(@Req() req: Request, @Body() subComment: CreateSubCommentDto) {
+		return this.commentService.createSubComment(req.user.id, subComment);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Put('sub/:id')
 	updateSubComment(
-		@Req() req,
+		@Req() req: Request,
 		@Param('id') id: string,
 		@Body() updateSubComment: UpdateSubCommentDto,
 	) {
-		return this.commentService.updateSubComment(req.user.userId, id, updateSubComment);
+		return this.commentService.updateSubComment(req.user.id, id, updateSubComment);
 	}
 	@UseGuards(JwtAuthGuard)
 	@Delete('sub/:id')
-	deleteSubComment(@Req() req, @Param('id') id: string) {
+	deleteSubComment(@Req() req: Request, @Param('id') id: string) {
 		return this.commentService.deleteSubComment(req.user, id);
 	}
 	// for post

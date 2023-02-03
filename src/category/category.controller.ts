@@ -3,6 +3,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CategoryService } from './category.service';
 import { CreateCategory } from './dto/create.category.dto';
 import { UpdateCategory } from './dto/update.category.dto';
+import { Request } from 'express';
 
 @Controller('category')
 export class CategoryController {
@@ -16,7 +17,7 @@ export class CategoryController {
 	 */
 	@UseGuards(JwtAuthGuard)
 	@Post()
-	createCategory(@Req() req, @Body() category: CreateCategory) {
+	createCategory(@Req() req: Request, @Body() category: CreateCategory) {
 		return this.categoryService.createCategory(req.user, category);
 	}
 	/**
@@ -29,7 +30,11 @@ export class CategoryController {
 	 */
 	@UseGuards(JwtAuthGuard)
 	@Put(':id')
-	updateCategory(@Req() req, @Param('id') id: string, @Body() updateCategory: UpdateCategory) {
+	updateCategory(
+		@Req() req: Request,
+		@Param('id') id: string,
+		@Body() updateCategory: UpdateCategory,
+	) {
 		return this.categoryService.updateCategory(req.user, id, updateCategory);
 	}
 	/**
@@ -42,7 +47,7 @@ export class CategoryController {
 	 */
 	@UseGuards(JwtAuthGuard)
 	@Delete(':id')
-	deleteCategory(@Req() req, @Param('id') id: string) {
+	deleteCategory(@Req() req: Request, @Param('id') id: string) {
 		return this.categoryService.deleteCategory(req.user, id);
 	}
 	/**
