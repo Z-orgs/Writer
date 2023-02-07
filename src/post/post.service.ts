@@ -121,23 +121,6 @@ export class PostService {
 	}
 	/**
 	 * It returns all posts that have a status of approved, ordered by the date they were created.
-	 *
-	 * The first line of the function is a TypeScript type annotation. It tells TypeScript that the
-	 * function will return a promise that resolves to an array of Post objects.
-	 *
-	 * The second line is the function declaration. It's an async function, which means it returns a
-	 * promise.
-	 *
-	 * The third line is the function body. It uses the await keyword to wait for the promise returned by
-	 * the find() function to resolve.
-	 *
-	 * The find() function is a method of the PostRepository object. It returns a promise that resolves to
-	 * an array of Post objects.
-	 *
-	 * The find() function takes an object as an argument. The object has two properties: where and order.
-	 *
-	 * The where property is an object that specifies the conditions that must be met for a Post object to
-	 * be included in the
 	 * @returns An array of posts.
 	 */
 	async getPosts() {
