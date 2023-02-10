@@ -6,7 +6,7 @@
 
 [Writer](https://github.com/Z-orgs/Writer) is a website for those who like to write and share opinions.
 This is a project which helps me have more experience with NestJS.
-You can clone and develop it becomes a commercial product. But don't forget my name ([Tom](https://github.com/VuongSyHanh)).
+You can clone and develop it becomes a commercial product. But don't forget my name ([mxz](https://github.com/mxz-twelve)).
 
 ## Installation
 
@@ -35,7 +35,7 @@ $ yarn prod
 
 ## Author
 
-- Author - [Tom](https://github.com/VuongSyHanh)
+- Author - [mxz](https://github.com/mxz.twelve)
 
 ## License
 
