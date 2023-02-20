@@ -327,11 +327,11 @@ export class UserService {
 	 * @returns The link to the uploaded image.
 	 */
 	async uploadImage(file: Express.Multer.File) {
-		const path = file.path;
-		const filename = `./src/upload/${Date.now()}.png`;
+		const { path, originalname } = file;
+		const filename = `./src/upload/${Date.now()}.${originalname.split('.').pop()}`;
 		renameSync(path, filename);
 		const uploadResult = await uploadFile(filename);
 		unlinkSync(filename);
-		return { link: uploadResult.link };
+		return { ...uploadResult };
 	}
 }

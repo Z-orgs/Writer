@@ -47,7 +47,8 @@ export class AuthService {
 	 * @returns The access_token is being returned.
 	 */
 	async login(user: User) {
-		const payload = { username: user.username, sub: user.id, role: user.role };
+		const { username, id, role } = user;
+		const payload = { username, sub: id, role };
 		return {
 			access_token: this.jwtService.sign(payload),
 		};
