@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/Z-orgs/Writer" target="blank"><img src="https://i.imgur.com/0aM3GMG.png" width="300" alt="Writer logo" /></a>
+  <a href="https://github.com/Z-orgs/Writer" target="blank"><img src="https://i.imgur.com/KpO3IB7.png" width="150" alt="Writer logo" /></a>
 </p>
 
 ## Description
