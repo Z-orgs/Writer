@@ -6,7 +6,7 @@
 
 [Writer](https://github.com/Z-orgs/Writer) is a website for those who like to write and share opinions.
 This is a project which helps me have more experience with NestJS.
-You can clone and develop it becomes a commercial product. But don't forget my name ([mxz](https://github.com/mxzLV)).
+You can clone and develop it becomes a commercial product. But don't forget my name ([mxz](https://github.com/mxzxm)).
 
 ## Installation
 
