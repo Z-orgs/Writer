@@ -1,36 +1,9 @@
-# #dev
-# services:
-#   mysql:
-#     image: mysql:oracle
-#     ports:
-#       - 3306:3306
-#     environment:
-#       - MYSQL_DATABASE=writer
-#       - MYSQL_ROOT_PASSWORD=root
-#     volumes:
-#       - ./data/mysql:/var/lib/mysql
-
-#deploy
 services:
-  node:
-    image: node:lts-hydrogen
-    command: sh -c "yarn && yarn start"
-    ports:
-      - 3000:3000
-    working_dir: /app
-    volumes:
-      - ./:/app
-    environment:
-      MYSQL_HOST: mysql
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-      MYSQL_DB: writer
-      SECRET: 123123dasd123gfggfdfg
-      EXPIRESIN: 24h
   mysql:
+    env_file:
+      - mysql.env
     image: mysql:oracle
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: writer
+    ports:
+      - 3306:3306
     volumes:
       - ./data/mysql:/var/lib/mysql
